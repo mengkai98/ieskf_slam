@@ -4,7 +4,7 @@
  * @version: 
  * @Date: 2023-06-09 00:47:23
  * @LastEditors: MengKai
- * @LastEditTime: 2023-06-09 00:51:21
+ * @LastEditTime: 2023-06-10 00:27:59
  */
 #pragma once
 #include "common_lidar_process_interface.h"
@@ -12,8 +12,8 @@ namespace avia_ros {
   struct EIGEN_ALIGN16 Point {
       PCL_ADD_POINT4D;
       float intensity;
-      float time;
-      uint16_t  ring;
+      std::uint32_t offset_time;
+      std::uint8_t  line;
       EIGEN_MAKE_ALIGNED_OPERATOR_NEW
   };
 }  // namespace ouster_ros
@@ -24,8 +24,8 @@ POINT_CLOUD_REGISTER_POINT_STRUCT(avia_ros::Point,
     (float, y, y)
     (float, z, z)
     (float, intensity, intensity)
-    (float, time, time)
-    (std::uint16_t, ring, ring)
+    (std::uint32_t, offset_time, offset_time)
+    (std::uint8_t, line, line)
 )
 namespace ROSNoetic
 {
@@ -42,8 +42,16 @@ namespace ROSNoetic
             cloud.cloud_ptr->clear();
             for (auto &&point : avia_cloud)
             {
-                
+                IESKFSlam::Point p;
+                p.x = point.x;
+                p.y = point.y;
+                p.z = point.z;
+                p.intensity = point.intensity;
+                p.ring = point.line;
+                p.offset_time = point.offset_time;
+                cloud.cloud_ptr->push_back(p);
             }
+            cloud.time_stamp.fromNsec(msg.header.stamp.toNSec());
             return true;
         }
     };

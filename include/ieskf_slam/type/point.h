@@ -1,3 +1,11 @@
+/*
+ * @Descripttion: 
+ * @Author: MengKai
+ * @version: 
+ * @Date: 2023-06-08 23:44:40
+ * @LastEditors: MengKai
+ * @LastEditTime: 2023-06-09 14:58:10
+ */
 #pragma once
 #ifndef PCL_NO_PRECOMPILE
 #define PCL_NO_PRECOMPILE
@@ -12,7 +20,6 @@ namespace IESKFSlam {
         float intensity;
         std::uint32_t offset_time;
         std::int32_t ring;
-        std::uint8_t tag;
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     };
 } 
@@ -23,5 +30,4 @@ POINT_CLOUD_REGISTER_POINT_STRUCT(IESKFSlam::Point,
     (float, intensity, intensity)
     (std::uint32_t, offset_time, offset_time)
     (std::int32_t, ring, ring)
-    (std::uint8_t, tag, tag)
 )
