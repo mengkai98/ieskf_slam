@@ -4,7 +4,7 @@
  * @version: 
  * @Date: 2023-06-08 21:04:57
  * @LastEditors: MengKai
- * @LastEditTime: 2023-06-09 08:59:55
+ * @LastEditTime: 2023-06-10 01:37:04
  */
 #pragma once
 #include "ieskf_slam/modules/frontend/frontend.h"
@@ -42,7 +42,7 @@ namespace ROSNoetic
     public:
         IESKFFrontEndWrapper(ros::NodeHandle &nh);
         ~IESKFFrontEndWrapper();
-    
+
     };
     
 
