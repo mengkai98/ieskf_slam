@@ -4,15 +4,17 @@
  * @version: 
  * @Date: 2023-06-09 00:07:58
  * @LastEditors: MengKai
- * @LastEditTime: 2023-06-10 00:34:51
+ * @LastEditTime: 2023-06-13 18:01:18
  */
 #include "ieskf_slam/modules/frontend/frontend.h"
 #include "pcl/common/transforms.h"
+
 namespace IESKFSlam
 {
     FrontEnd::FrontEnd(const std::string &config_file_path,const std::string & prefix ):ModuleBase(config_file_path,prefix,"Front End Module")
     {
-
+        ieskf_ptr = std::make_shared<IESKF>();
+        map_ptr  = std::make_shared<RectMapManager>();
     }
     
     FrontEnd::~FrontEnd()
@@ -30,45 +32,99 @@ namespace IESKFSlam
         std::cout<<"receive pose"<<std::endl;
     }
     bool FrontEnd::track(){
-        if(pose_deque.empty()||pointcloud_deque.empty()){
-            return false;
+        MeasureGroup mg;
+        if(syncMeasureGroup(mg)){
+            
+            if(!imu_inited){
+                map_ptr->reset();
+                map_ptr->addScan(mg.cloud.cloud_ptr,Eigen::Quaterniond::Identity(),Eigen::Vector3d::Zero());
+                initState(mg);
+                return false;
+            }
+            return true;
         }
-        // 寻找同一时刻的点云和位姿
-        
-        while (!pose_deque.empty()&&pose_deque.front().time_stamp.nsec()<pointcloud_deque.front().time_stamp.nsec())
-        {   
-            std::cout<<"1"<<std::endl;
-            pose_deque.pop_front();
-        }
-        if(pose_deque.empty()){
-            return false;
-        }
-        while (!pointcloud_deque.empty()&&pointcloud_deque.front().time_stamp.nsec()<pose_deque.front().time_stamp.nsec())
-        {
-            std::cout<<"2"<<std::endl;
-            pointcloud_deque.pop_front();
-        }
-        if(pointcloud_deque.empty()){
-            return false;
-        }
-        // 滤波
-        VoxelFilter vf;
-        vf.setLeafSize(0.5,0.5,0.5);
-        vf.setInputCloud(pointcloud_deque.front().cloud_ptr);
-        vf.filter(*pointcloud_deque.front().cloud_ptr);
-
-        Eigen::Matrix4f trans;
-        trans.setIdentity();
-        trans.block<3,3>(0,0) = pose_deque.front().rotation.toRotationMatrix().cast<float>();
-        trans.block<3,1>(0,3) = pose_deque.front().position.cast<float>();
-        pcl::transformPointCloud(*pointcloud_deque.front().cloud_ptr,current_pointcloud,trans);
-
-
-        pointcloud_deque.pop_front();
-        pose_deque.pop_front();
-        return true;
+        return false;
     }
     const PCLPointCloud& FrontEnd::readCurrentPointCloud(){
         return current_pointcloud;
+    }
+    bool FrontEnd::syncMeasureGroup(MeasureGroup&mg){
+        mg.imus.clear();
+        mg.cloud.cloud_ptr->clear();
+        if ( pointcloud_deque.empty()||imu_deque.empty())
+        {
+
+            return false;
+        }
+        ///. wait for imu
+        double imu_end_time = imu_deque.back().time_stamp.sec();
+        double imu_start_time = imu_deque.front().time_stamp.sec();
+        double cloud_start_time =pointcloud_deque.front().time_stamp.sec();
+        double cloud_end_time = pointcloud_deque.front().cloud_ptr->points.back().offset_time/1e9+cloud_start_time;
+        
+        if (imu_end_time<cloud_end_time){
+
+            return false;
+        }
+        
+
+        if (cloud_end_time<imu_start_time)
+        {
+
+            pointcloud_deque.pop_front();
+            return false;
+        }
+        mg.cloud = pointcloud_deque.front();
+        pointcloud_deque.pop_front();
+        mg.lidar_begin_time = cloud_start_time;
+        mg.lidar_end_time = cloud_end_time;
+        while (!imu_deque.empty())
+        {
+            if (imu_deque.front().time_stamp.sec()<mg.lidar_end_time)
+            {
+                mg.imus.push_back(imu_deque.front());
+                imu_deque.pop_front();
+                
+            }else{
+                break;
+            }
+        }
+        if(mg.imus.size()<=5){
+
+            return false;
+        }
+        return true;
+    }
+    void FrontEnd::initState(MeasureGroup&mg){
+        static int imu_count = 0;
+        static Eigen::Vector3d mean_acc{0,0,0};
+        auto &ieskf = *ieskf_ptr;
+        if (imu_inited)
+        {
+            return ;
+        }
+        
+        for (size_t i = 0; i < mg.imus.size(); i++)
+        {
+            imu_count++;
+            auto x = ieskf.getX();
+            mean_acc +=mg.imus[i].acceleration;
+            x.bg += mg.imus[i].gyroscope;
+            ieskf.setX(x);
+
+        }
+        if (imu_count >= 5)
+        {
+            auto x = ieskf.getX();
+            mean_acc /=double(imu_count);
+
+            x.bg /=double(imu_count);
+            imu_scale  = GRAVITY/mean_acc.norm();
+            // 重力的符号为负 就和fastlio公式一致
+            x.gravity = - mean_acc / mean_acc.norm() * GRAVITY;
+            ieskf.setX(x);
+            imu_inited = true;
+        }
+        return ;
     }
 } // namespace IESKFSlam
