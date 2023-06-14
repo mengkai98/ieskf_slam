@@ -4,7 +4,7 @@
  * @version: 
  * @Date: 2023-06-09 00:05:03
  * @LastEditors: MengKai
- * @LastEditTime: 2023-06-13 17:59:16
+ * @LastEditTime: 2023-06-14 12:19:28
  */
 #pragma once
 #include "ieskf_slam/modules/module_base.h"
@@ -23,7 +23,6 @@ namespace IESKFSlam
     private:
         std::deque<IMU> imu_deque;
         std::deque<PointCloud> pointcloud_deque;
-        std::deque<Pose> pose_deque; 
         PCLPointCloud current_pointcloud;
         std::shared_ptr<IESKF> ieskf_ptr;
         std::shared_ptr<RectMapManager> map_ptr;
@@ -35,7 +34,7 @@ namespace IESKFSlam
         // 需要向前端传入imu和点云数据
         void addImu(const IMU&imu);
         void addPointCloud(const PointCloud&pointcloud);
-        void addPose(const Pose&pose);
+
         // 跟踪
         bool track();
         // 点云读取

@@ -4,7 +4,7 @@
  * @version: 
  * @Date: 2023-06-08 21:04:57
  * @LastEditors: MengKai
- * @LastEditTime: 2023-06-10 01:37:04
+ * @LastEditTime: 2023-06-14 12:21:44
  */
 #pragma once
 #include "ieskf_slam/modules/frontend/frontend.h"
@@ -25,7 +25,6 @@ namespace ROSNoetic
         IESKFSlam::FrontEnd::Ptr front_end_ptr;
         ros::Subscriber cloud_subscriber;
         ros::Subscriber imu_subscriber;
-        ros::Subscriber odometry_subscriber;
         ros::Publisher curr_cloud_pub;
         
         std::shared_ptr<CommonLidarProcessInterface> lidar_process_ptr;
@@ -36,7 +35,6 @@ namespace ROSNoetic
         Eigen::Vector3d curr_t;
         void lidarCloudMsgCallBack(const sensor_msgs::PointCloud2Ptr &msg);
         void imuMsgCallBack(const sensor_msgs::ImuPtr &msg);
-        void odometryMsgCallBack(const nav_msgs::OdometryPtr &msg);
         void run();
         void publishMsg();
     public:

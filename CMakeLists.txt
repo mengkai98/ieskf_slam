@@ -32,6 +32,8 @@ include_directories(
 )
 SET(IESKF_SLAM_FILE
     src/ieskf_slam/modules/frondend/frontend.cpp
+    src/ieskf_slam/modules/ieskf/ieskf.cpp
+    src/ieskf_slam/modules/map/rect_map_manager.cpp
 )
 SET(NOETIC_FRONTEND_WRAPPER_FILE
     src/wrapper/ros_noetic/ieskf_frontend_noetic_wrapper.cpp

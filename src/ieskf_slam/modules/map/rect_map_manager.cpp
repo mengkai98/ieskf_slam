@@ -4,10 +4,11 @@
  * @version: 
  * @Date: 2023-06-13 17:49:23
  * @LastEditors: MengKai
- * @LastEditTime: 2023-06-13 17:58:15
+ * @LastEditTime: 2023-06-14 12:24:43
  */
 #include "ieskf_slam/modules/map/rect_map_manager.h"
 #include "pcl/common/transforms.h"
+#include "ieskf_slam/math/math.hpp"
 namespace IESKFSlam
 {
     RectMapManager::RectMapManager(const std::string &config_file_path,const std::string & prefix ):ModuleBase(config_file_path,prefix,"RectMapManager")
@@ -25,5 +26,8 @@ namespace IESKFSlam
     }
     void RectMapManager::reset(){
         local_map_ptr->clear();
+    }
+    PCLPointCloudConstPtr RectMapManager::getLocalMap(){
+        return local_map_ptr;
     }
 } // namespace IESKFSlam

@@ -4,7 +4,7 @@
  * @version: 
  * @Date: 2023-06-08 23:47:42
  * @LastEditors: MengKai
- * @LastEditTime: 2023-06-13 12:54:32
+ * @LastEditTime: 2023-06-14 12:04:45
  */
 #pragma once
 #include "ieskf_slam/type/point.h"
@@ -13,6 +13,7 @@ namespace IESKFSlam
 {
     using PCLPointCloud = pcl::PointCloud<Point>;
     using PCLPointCloudPtr = PCLPointCloud::Ptr;
+    using PCLPointCloudConstPtr = PCLPointCloud::ConstPtr;
     struct PointCloud{
         using Ptr = std::shared_ptr<PointCloud>;
         TimeStamp time_stamp;

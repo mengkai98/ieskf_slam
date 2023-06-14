@@ -4,17 +4,16 @@
  * @version: 
  * @Date: 2023-06-09 00:07:58
  * @LastEditors: MengKai
- * @LastEditTime: 2023-06-13 18:01:18
+ * @LastEditTime: 2023-06-14 12:19:34
  */
 #include "ieskf_slam/modules/frontend/frontend.h"
-#include "pcl/common/transforms.h"
 
 namespace IESKFSlam
 {
     FrontEnd::FrontEnd(const std::string &config_file_path,const std::string & prefix ):ModuleBase(config_file_path,prefix,"Front End Module")
     {
-        ieskf_ptr = std::make_shared<IESKF>();
-        map_ptr  = std::make_shared<RectMapManager>();
+        ieskf_ptr = std::make_shared<IESKF>(config_file_path,"ieskf");
+        map_ptr  = std::make_shared<RectMapManager>(config_file_path,"map");
     }
     
     FrontEnd::~FrontEnd()
@@ -27,10 +26,6 @@ namespace IESKFSlam
         pointcloud_deque.push_back(pointcloud);
         std::cout<<"receive cloud"<<std::endl;
     }
-    void FrontEnd::addPose(const Pose&pose){
-        pose_deque.push_back(pose);
-        std::cout<<"receive pose"<<std::endl;
-    }
     bool FrontEnd::track(){
         MeasureGroup mg;
         if(syncMeasureGroup(mg)){
@@ -41,6 +36,7 @@ namespace IESKFSlam
                 initState(mg);
                 return false;
             }
+            std::cout<<mg.imus.size()<<" scale: "<<imu_scale<<std::endl;
             return true;
         }
         return false;
