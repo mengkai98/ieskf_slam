@@ -4,7 +4,7 @@
  * @version: 
  * @Date: 2023-06-09 00:05:03
  * @LastEditors: MengKai
- * @LastEditTime: 2023-06-14 12:19:28
+ * @LastEditTime: 2023-06-18 20:28:22
  */
 #pragma once
 #include "ieskf_slam/modules/module_base.h"
@@ -14,6 +14,7 @@
 #include "ieskf_slam/type/measure_group.h"
 #include "ieskf_slam/modules/ieskf/ieskf.h"
 #include "ieskf_slam/modules/map/rect_map_manager.h"
+#include "ieskf_slam/modules/frontbackPropagate/frontback_propagate.h"
 namespace IESKFSlam
 {
     class FrontEnd: private ModuleBase
@@ -26,6 +27,7 @@ namespace IESKFSlam
         PCLPointCloud current_pointcloud;
         std::shared_ptr<IESKF> ieskf_ptr;
         std::shared_ptr<RectMapManager> map_ptr;
+        std::shared_ptr<FrontbackPropagate> fbpropagate_ptr;
         bool imu_inited = false;
         double imu_scale = 1;
     public:
@@ -41,6 +43,6 @@ namespace IESKFSlam
         const PCLPointCloud &readCurrentPointCloud();
         bool syncMeasureGroup(MeasureGroup&mg);
         void initState(MeasureGroup&mg);
-        
+        IESKF::State18 readState();
     };
 } // namespace IESKFSlam

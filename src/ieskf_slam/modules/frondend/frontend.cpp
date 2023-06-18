@@ -4,7 +4,7 @@
  * @version: 
  * @Date: 2023-06-09 00:07:58
  * @LastEditors: MengKai
- * @LastEditTime: 2023-06-14 12:19:34
+ * @LastEditTime: 2023-06-18 20:28:48
  */
 #include "ieskf_slam/modules/frontend/frontend.h"
 
@@ -14,6 +14,7 @@ namespace IESKFSlam
     {
         ieskf_ptr = std::make_shared<IESKF>(config_file_path,"ieskf");
         map_ptr  = std::make_shared<RectMapManager>(config_file_path,"map");
+        fbpropagate_ptr = std::make_shared<FrontbackPropagate>();
     }
     
     FrontEnd::~FrontEnd()
@@ -36,7 +37,7 @@ namespace IESKFSlam
                 initState(mg);
                 return false;
             }
-            std::cout<<mg.imus.size()<<" scale: "<<imu_scale<<std::endl;
+            fbpropagate_ptr->propagate(mg,ieskf_ptr);
             return true;
         }
         return false;
@@ -116,6 +117,8 @@ namespace IESKFSlam
 
             x.bg /=double(imu_count);
             imu_scale  = GRAVITY/mean_acc.norm();
+            fbpropagate_ptr->imu_scale = imu_scale;
+            fbpropagate_ptr->last_imu = mg.imus.back();
             // 重力的符号为负 就和fastlio公式一致
             x.gravity = - mean_acc / mean_acc.norm() * GRAVITY;
             ieskf.setX(x);

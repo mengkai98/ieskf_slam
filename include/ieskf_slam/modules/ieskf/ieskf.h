@@ -4,7 +4,7 @@
  * @version: 
  * @Date: 2023-06-13 13:00:25
  * @LastEditors: MengKai
- * @LastEditTime: 2023-06-14 12:27:05
+ * @LastEditTime: 2023-06-18 20:13:06
  */
 #pragma once 
 #include "ieskf_slam/modules/module_base.h"
@@ -15,6 +15,7 @@ namespace IESKFSlam
     class IESKF: private ModuleBase
     {
     public:
+        using Ptr = std::shared_ptr<IESKF>;
         struct State18
         {
             Eigen::Quaterniond rotation;
@@ -34,10 +35,13 @@ namespace IESKFSlam
         };
     private:
         State18 X;
+        Eigen::Matrix<double,18,18> P;
+        Eigen::Matrix<double,12,12> Q;
+
     public:
         IESKF(const std::string & config_path,const std::string &prefix);
         ~IESKF();
-        void predict(const IMU&imu,double dt);
+        void predict(IMU imu,double dt);
         bool update();
         const State18&getX();
         void setX(const State18&x_in);
