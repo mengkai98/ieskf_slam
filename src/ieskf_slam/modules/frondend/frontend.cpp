@@ -3,8 +3,8 @@
  * @Author: MengKai
  * @version: 
  * @Date: 2023-06-09 00:07:58
- * @LastEditors: MengKai
- * @LastEditTime: 2023-06-18 20:28:48
+ * @LastEditors: Danny 986337252@qq.com
+ * @LastEditTime: 2023-06-19 13:24:40
  */
 #include "ieskf_slam/modules/frontend/frontend.h"
 
@@ -125,5 +125,8 @@ namespace IESKFSlam
             imu_inited = true;
         }
         return ;
+    }
+    IESKF::State18 FrontEnd::readState(){
+        return ieskf_ptr->getX();
     }
 } // namespace IESKFSlam

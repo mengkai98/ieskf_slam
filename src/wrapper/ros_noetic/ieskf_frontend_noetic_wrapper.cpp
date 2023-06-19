@@ -3,12 +3,12 @@
  * @Author: MengKai
  * @version: 
  * @Date: 2023-06-08 21:05:55
- * @LastEditors: MengKai
- * @LastEditTime: 2023-06-14 12:21:26
+ * @LastEditors: Danny 986337252@qq.com
+ * @LastEditTime: 2023-06-19 13:46:33
  */
 #include "wrapper/ros_noetic/ieskf_frontend_noetic_wrapper.h"
 #include "ieskf_slam/globaldefine.h"
-
+#include "nav_msgs/Path.h"
 namespace ROSNoetic
 {
     IESKFFrontEndWrapper::IESKFFrontEndWrapper(ros::NodeHandle &nh)
@@ -35,6 +35,7 @@ namespace ROSNoetic
             exit(100);
         }
         curr_cloud_pub = nh.advertise<sensor_msgs::PointCloud2>("curr_cloud",100);
+        path_pub = nh.advertise<nav_msgs::Path>("path",100);
 
         run();
     }
@@ -66,10 +67,19 @@ namespace ROSNoetic
         }
     }
     void IESKFFrontEndWrapper::publishMsg(){
-        auto cloud =front_end_ptr->readCurrentPointCloud();
-        sensor_msgs::PointCloud2 msg;
-        pcl::toROSMsg(cloud,msg);
-        msg.header.frame_id = "map";
-        curr_cloud_pub.publish(msg);
+        static nav_msgs::Path path;
+        auto X =  front_end_ptr->readState();
+        path.header.frame_id="map";
+        geometry_msgs::PoseStamped psd;
+        psd.pose.position.x = X.position.x();
+        psd.pose.position.y = X.position.y();
+        psd.pose.position.z = X.position.z();
+        path.poses.push_back(psd);
+        path_pub.publish(path);
+        // auto cloud =front_end_ptr->readCurrentPointCloud();
+        // sensor_msgs::PointCloud2 msg;
+        // pcl::toROSMsg(cloud,msg);
+        // msg.header.frame_id = "map";
+        // curr_cloud_pub.publish(msg);
     }
 } // namespace ROSNoetic

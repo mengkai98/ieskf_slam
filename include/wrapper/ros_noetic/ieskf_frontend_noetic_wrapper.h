@@ -3,8 +3,8 @@
  * @Author: MengKai
  * @version: 
  * @Date: 2023-06-08 21:04:57
- * @LastEditors: MengKai
- * @LastEditTime: 2023-06-14 12:21:44
+ * @LastEditors: Danny 986337252@qq.com
+ * @LastEditTime: 2023-06-19 13:45:20
  */
 #pragma once
 #include "ieskf_slam/modules/frontend/frontend.h"
@@ -26,13 +26,10 @@ namespace ROSNoetic
         ros::Subscriber cloud_subscriber;
         ros::Subscriber imu_subscriber;
         ros::Publisher curr_cloud_pub;
-        
+        ros::Publisher path_pub;
         std::shared_ptr<CommonLidarProcessInterface> lidar_process_ptr;
 
         // now status
-        IESKFSlam::PCLPointCloud curr_cloud;
-        Eigen::Quaterniond curr_q;
-        Eigen::Vector3d curr_t;
         void lidarCloudMsgCallBack(const sensor_msgs::PointCloud2Ptr &msg);
         void imuMsgCallBack(const sensor_msgs::ImuPtr &msg);
         void run();
