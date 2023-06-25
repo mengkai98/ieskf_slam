@@ -4,11 +4,9 @@
  * @version: 
  * @Date: 2023-06-08 21:05:55
  * @LastEditors: Danny 986337252@qq.com
- * @LastEditTime: 2023-06-19 13:46:33
+ * @LastEditTime: 2023-06-25 14:48:47
  */
 #include "wrapper/ros_noetic/ieskf_frontend_noetic_wrapper.h"
-#include "ieskf_slam/globaldefine.h"
-#include "nav_msgs/Path.h"
 namespace ROSNoetic
 {
     IESKFFrontEndWrapper::IESKFFrontEndWrapper(ros::NodeHandle &nh)
@@ -17,8 +15,6 @@ namespace ROSNoetic
         nh.param<std::string>("wrapper/config_file_name",config_file_name,"");
         nh.param<std::string>("wrapper/lidar_topic",lidar_topic,"/lidar");
         nh.param<std::string>("wrapper/imu_topic",imu_topic,"/imu");
-        std::cout<<lidar_topic<<std::endl;
-        std::cout<<imu_topic<<std::endl;
         front_end_ptr = std::make_shared<IESKFSlam::FrontEnd>(CONFIG_DIR+config_file_name,"front_end");
 
         // 发布者和订阅者

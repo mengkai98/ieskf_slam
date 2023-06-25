@@ -4,19 +4,43 @@
  * @version: 
  * @Date: 2023-06-09 00:07:58
  * @LastEditors: Danny 986337252@qq.com
- * @LastEditTime: 2023-06-19 13:24:40
+ * @LastEditTime: 2023-06-25 14:49:35
  */
 #include "ieskf_slam/modules/frontend/frontend.h"
-
 namespace IESKFSlam
 {
     FrontEnd::FrontEnd(const std::string &config_file_path,const std::string & prefix ):ModuleBase(config_file_path,prefix,"Front End Module")
     {
+        float leaf_size;
+        readParam("filter_leaf_size",leaf_size,0.5f);
+        voxel_filter.setLeafSize(leaf_size,leaf_size,leaf_size);
+        std::vector<double>extrin_v;
+        readParam("extrin_r",extrin_v,std::vector<double>());
+        extrin_r.setIdentity();
+        extrin_t.setZero();
+        if(extrin_v.size()==9){
+            Eigen::Matrix3d extrin_r33;
+            extrin_r33<<extrin_v[0],extrin_v[1],extrin_v[2],extrin_v[3],extrin_v[4],extrin_v[5],extrin_v[6],extrin_v[7],extrin_v[8];
+            extrin_r = extrin_r33;
+        }else if (extrin_v.size()==3){
+            extrin_r.x() = extrin_v[0];
+            extrin_r.y() = extrin_v[1];
+            extrin_r.z() = extrin_v[2];
+            extrin_r.w() = extrin_v[3];
+        }
+        readParam("extrin_t",extrin_v,std::vector<double>());
+        if(extrin_v.size()==3){
+            extrin_t<<extrin_v[0],extrin_v[1],extrin_v[2];
+        }
         ieskf_ptr = std::make_shared<IESKF>(config_file_path,"ieskf");
         map_ptr  = std::make_shared<RectMapManager>(config_file_path,"map");
+        
         fbpropagate_ptr = std::make_shared<FrontbackPropagate>();
+        lio_zh_model_ptr = std::make_shared<LIOZHModel>();
+        ieskf_ptr->calc_zh_ptr =lio_zh_model_ptr;
+        filter_point_cloud_ptr = pcl::make_shared<PCLPointCloud>();
+        lio_zh_model_ptr->prepare(map_ptr->readKDtree(),filter_point_cloud_ptr,map_ptr->getLocalMap());
     }
-    
     FrontEnd::~FrontEnd()
     {
     }
@@ -38,6 +62,11 @@ namespace IESKFSlam
                 return false;
             }
             fbpropagate_ptr->propagate(mg,ieskf_ptr);
+            voxel_filter.setInputCloud(mg.cloud.cloud_ptr);
+            voxel_filter.filter(*filter_point_cloud_ptr);
+            ieskf_ptr->update();
+            auto x = ieskf_ptr->getX();
+            map_ptr->addScan(filter_point_cloud_ptr,x.rotation,x.position);
             return true;
         }
         return false;

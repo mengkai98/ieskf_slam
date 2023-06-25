@@ -3,13 +3,14 @@
  * @Author: MengKai
  * @version: 
  * @Date: 2023-06-13 13:00:25
- * @LastEditors: MengKai
- * @LastEditTime: 2023-06-18 20:13:06
+ * @LastEditors: Danny 986337252@qq.com
+ * @LastEditTime: 2023-06-25 14:48:29
  */
 #pragma once 
 #include "ieskf_slam/modules/module_base.h"
 #include <Eigen/Dense>
 #include "ieskf_slam/type/imu.h"
+#include "ieskf_slam/math/SO3.hpp"
 namespace IESKFSlam
 {
     class IESKF: private ModuleBase
@@ -33,11 +34,19 @@ namespace IESKFSlam
                 gravity = Eigen::Vector3d::Zero();
             }
         };
+        class CalcZHInterface
+        {
+        public:
+            virtual bool calculate(const State18&state,Eigen::MatrixXd & Z,Eigen::MatrixXd & H)=0;
+        };
+
+        std::shared_ptr<CalcZHInterface> calc_zh_ptr;
     private:
         State18 X;
         Eigen::Matrix<double,18,18> P;
         Eigen::Matrix<double,12,12> Q;
-
+        int iter_times = 10;
+        
     public:
         IESKF(const std::string & config_path,const std::string &prefix);
         ~IESKF();
@@ -45,6 +54,7 @@ namespace IESKFSlam
         bool update();
         const State18&getX();
         void setX(const State18&x_in);
+        Eigen::Matrix<double,18,1> getErrorState18(const State18 &s1, const  State18 &s2);
     };
     
 

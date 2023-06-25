@@ -3,11 +3,10 @@
  * @Author: MengKai
  * @version: 
  * @Date: 2023-06-13 16:43:29
- * @LastEditors: MengKai
- * @LastEditTime: 2023-06-18 20:08:13
+ * @LastEditors: Danny 986337252@qq.com
+ * @LastEditTime: 2023-06-25 14:49:29
  */
 #include "ieskf_slam/modules/ieskf/ieskf.h"
-#include "ieskf_slam/math/SO3.hpp"
 namespace IESKFSlam
 {
     IESKF::IESKF(const std::string & config_path,const std::string &prefix):ModuleBase(config_path,prefix,"IESKF")
@@ -65,8 +64,76 @@ namespace IESKFSlam
 
     }
     bool IESKF::update(){
-        
+        static int cnt_ = 0;
+        auto x_k_k = X;
+        auto x_k_last = X;
+        ///. 开迭
+        Eigen::MatrixXd K;
+        Eigen::MatrixXd H_k;
+        Eigen::Matrix<double,18,18> P_in_update;
+        bool converge =true;
+        for (int i = 0; i < iter_times; i++)
+        {
+            ///. 计算J
+            Eigen::Matrix<double,18,1> error_state = getErrorState18(x_k_k,X);
+            Eigen::Matrix<double,18,18> J_inv;
+
+            J_inv.setIdentity();
+            
+            J_inv.block<3,3>(0,0) = A_T(error_state.block<3,1>(0,0));
+
+            P_in_update = J_inv*P*J_inv.transpose();
+
+            Eigen::MatrixXd z_k;
+            
+            Eigen::MatrixXd R_inv;// R 直接写死0.001; 
+            calc_zh_ptr->calculate(x_k_k,z_k,H_k);
+            // zhr_model(x_k_k,z_k,H_k,R_inv);
+            Eigen::MatrixXd H_kt = H_k.transpose();
+            K = (H_kt*H_k+(P_in_update/0.001).inverse()).inverse()*H_kt;
+            Eigen::MatrixXd left = -1*K*z_k;
+
+            Eigen::MatrixXd right = -1*(Eigen::Matrix<double,18,18>::Identity()-K*H_k)*J_inv*error_state; 
+
+            Eigen::MatrixXd update_x = left+right;
+            converge =true;
+            for ( int idx = 0; idx < 18; idx++)
+            {
+                if (update_x(i,0)>0.001)
+                {
+                    
+                    converge = false;
+                    break;
+                }
+                
+            }
+            x_k_k.rotation = x_k_k.rotation.toRotationMatrix()*so3Exp(update_x.block<3,1>(0,0));
+            x_k_k.rotation.normalize();
+            x_k_k.position = x_k_k.position+update_x.block<3,1>(3,0);
+            x_k_k.velocity = x_k_k.velocity+update_x.block<3,1>(6,0);
+            x_k_k.bg = x_k_k.bg+update_x.block<3,1>(9,0);
+            x_k_k.ba = x_k_k.ba+update_x.block<3,1>(12,0);
+            x_k_k.gravity = x_k_k.gravity+update_x.block<3,1>(15,0);
+            if(converge){
+                break;
+            }
+        }
+        cnt_++;
+        X = x_k_k;
+        P = (Eigen::Matrix<double,18,18>::Identity()-K*H_k)*P_in_update;
+        return converge;
     }
+    Eigen::Matrix<double,18,1> IESKF::getErrorState18(const State18 &s1, const  State18 &s2){
+            Eigen::Matrix<double,18,1> es;
+            es.setZero();
+            es.block<3,1>(0,0) = SO3Log(s2.rotation.toRotationMatrix().transpose() * s1.rotation.toRotationMatrix());
+            es.block<3,1>(3,0) = s1.position - s2.position;
+            es.block<3,1>(6,0) = s1.velocity - s2.velocity;
+            es.block<3,1>(9,0) = s1.bg - s2.bg;
+            es.block<3,1>(12,0) = s1.ba - s2.ba;
+            es.block<3,1>(15,0) = s1.gravity - s2.gravity;
+            return es;
+        }
     const IESKF::State18&IESKF::getX(){
         return X;
     }

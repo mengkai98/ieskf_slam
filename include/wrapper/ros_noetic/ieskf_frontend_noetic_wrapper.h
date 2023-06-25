@@ -4,7 +4,7 @@
  * @version: 
  * @Date: 2023-06-08 21:04:57
  * @LastEditors: Danny 986337252@qq.com
- * @LastEditTime: 2023-06-19 13:45:20
+ * @LastEditTime: 2023-06-25 14:48:50
  */
 #pragma once
 #include "ieskf_slam/modules/frontend/frontend.h"
@@ -13,6 +13,8 @@
 #include "sensor_msgs/Imu.h"
 #include "nav_msgs/Odometry.h"
 #include "wrapper/ros_noetic/lidar_process/avia_process.h"
+#include "ieskf_slam/globaldefine.h"
+#include "nav_msgs/Path.h"
 namespace ROSNoetic
 {
     enum LIDAR_TYPE{
