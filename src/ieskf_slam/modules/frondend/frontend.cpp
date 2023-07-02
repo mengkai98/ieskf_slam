@@ -4,7 +4,7 @@
  * @version: 
  * @Date: 2023-06-09 00:07:58
  * @LastEditors: Danny 986337252@qq.com
- * @LastEditTime: 2023-06-25 14:49:35
+ * @LastEditTime: 2023-07-02 15:27:35
  */
 #include "ieskf_slam/modules/frontend/frontend.h"
 namespace IESKFSlam
@@ -49,7 +49,6 @@ namespace IESKFSlam
     }
     void FrontEnd::addPointCloud(const PointCloud&pointcloud){
         pointcloud_deque.push_back(pointcloud);
-        std::cout<<"receive cloud"<<std::endl;
     }
     bool FrontEnd::track(){
         MeasureGroup mg;
@@ -72,7 +71,7 @@ namespace IESKFSlam
         return false;
     }
     const PCLPointCloud& FrontEnd::readCurrentPointCloud(){
-        return current_pointcloud;
+        return *filter_point_cloud_ptr;
     }
     bool FrontEnd::syncMeasureGroup(MeasureGroup&mg){
         mg.imus.clear();

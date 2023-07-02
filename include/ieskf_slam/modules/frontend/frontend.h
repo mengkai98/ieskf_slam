@@ -4,7 +4,7 @@
  * @version: 
  * @Date: 2023-06-09 00:05:03
  * @LastEditors: Danny 986337252@qq.com
- * @LastEditTime: 2023-07-02 15:03:12
+ * @LastEditTime: 2023-07-02 15:24:34
  */
 #pragma once
 #include "ieskf_slam/modules/module_base.h"
@@ -25,7 +25,6 @@ namespace IESKFSlam
     private:
         std::deque<IMU> imu_deque;
         std::deque<PointCloud> pointcloud_deque;
-        PCLPointCloud current_pointcloud;
         std::shared_ptr<IESKF> ieskf_ptr;
         std::shared_ptr<RectMapManager> map_ptr;
         std::shared_ptr<FrontbackPropagate> fbpropagate_ptr;

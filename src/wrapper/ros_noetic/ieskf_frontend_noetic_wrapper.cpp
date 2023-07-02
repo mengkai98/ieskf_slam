@@ -4,7 +4,7 @@
  * @version: 
  * @Date: 2023-06-08 21:05:55
  * @LastEditors: Danny 986337252@qq.com
- * @LastEditTime: 2023-06-25 14:48:47
+ * @LastEditTime: 2023-07-02 15:25:59
  */
 #include "wrapper/ros_noetic/ieskf_frontend_noetic_wrapper.h"
 namespace ROSNoetic
@@ -72,10 +72,12 @@ namespace ROSNoetic
         psd.pose.position.z = X.position.z();
         path.poses.push_back(psd);
         path_pub.publish(path);
+        IESKFSlam::PCLPointCloud cloud = front_end_ptr->readCurrentPointCloud();
+        pcl:: transformPointCloud(cloud,cloud,IESKFSlam::compositeTransform(X.rotation,X.position).cast<float>());
         // auto cloud =front_end_ptr->readCurrentPointCloud();
-        // sensor_msgs::PointCloud2 msg;
-        // pcl::toROSMsg(cloud,msg);
-        // msg.header.frame_id = "map";
-        // curr_cloud_pub.publish(msg);
+        sensor_msgs::PointCloud2 msg;
+        pcl::toROSMsg(cloud,msg);
+        msg.header.frame_id = "map";
+        curr_cloud_pub.publish(msg);
     }
 } // namespace ROSNoetic
