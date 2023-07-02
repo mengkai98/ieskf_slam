@@ -4,7 +4,7 @@
  * @version: 
  * @Date: 2023-06-13 16:43:29
  * @LastEditors: Danny 986337252@qq.com
- * @LastEditTime: 2023-06-25 14:49:29
+ * @LastEditTime: 2023-07-02 16:01:59
  */
 #include "ieskf_slam/modules/ieskf/ieskf.h"
 namespace IESKFSlam
@@ -74,28 +74,27 @@ namespace IESKFSlam
         bool converge =true;
         for (int i = 0; i < iter_times; i++)
         {
-            ///. 计算J
+            ///. 计算误差状态 J 
             Eigen::Matrix<double,18,1> error_state = getErrorState18(x_k_k,X);
             Eigen::Matrix<double,18,18> J_inv;
-
-            J_inv.setIdentity();
-            
+            J_inv.setIdentity();            
             J_inv.block<3,3>(0,0) = A_T(error_state.block<3,1>(0,0));
-
+            // 更新 P
             P_in_update = J_inv*P*J_inv.transpose();
 
             Eigen::MatrixXd z_k;
-            
-            Eigen::MatrixXd R_inv;// R 直接写死0.001; 
+            Eigen::MatrixXd R_inv;
+            // 调用接口计算 Z H
             calc_zh_ptr->calculate(x_k_k,z_k,H_k);
-            // zhr_model(x_k_k,z_k,H_k,R_inv);
             Eigen::MatrixXd H_kt = H_k.transpose();
+            // R 直接写死0.001; 
             K = (H_kt*H_k+(P_in_update/0.001).inverse()).inverse()*H_kt;
+            //. 计算X 的增量
             Eigen::MatrixXd left = -1*K*z_k;
-
             Eigen::MatrixXd right = -1*(Eigen::Matrix<double,18,18>::Identity()-K*H_k)*J_inv*error_state; 
-
             Eigen::MatrixXd update_x = left+right;
+
+            // 收敛判断
             converge =true;
             for ( int idx = 0; idx < 18; idx++)
             {
@@ -107,6 +106,7 @@ namespace IESKFSlam
                 }
                 
             }
+            // 更新X
             x_k_k.rotation = x_k_k.rotation.toRotationMatrix()*so3Exp(update_x.block<3,1>(0,0));
             x_k_k.rotation.normalize();
             x_k_k.position = x_k_k.position+update_x.block<3,1>(3,0);
