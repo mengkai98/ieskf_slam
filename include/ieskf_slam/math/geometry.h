@@ -2,7 +2,7 @@
  * @Author: Danny 986337252@qq.com
  * @Date: 2023-06-23 17:12:09
  * @LastEditors: Danny 986337252@qq.com
- * @LastEditTime: 2023-06-25 14:47:00
+ * @LastEditTime: 2023-07-02 15:18:02
  * @FilePath: /ieskf_slam/include/ieskf_slam/math/geometry.hpp
  */
 #pragma once
@@ -11,7 +11,7 @@
 namespace IESKFSlam
 {
     template< typename pointTypeT >
-    bool planarCheck(const std::vector<pointTypeT> & points, Eigen::Vector4d &pabcd, float threhold){
+    static bool planarCheck(const std::vector<pointTypeT> & points, Eigen::Vector4d &pabcd, float threhold){
         Eigen::Vector3d normal_vector;
         Eigen::MatrixXd A;
         Eigen::VectorXd B;
@@ -47,7 +47,7 @@ namespace IESKFSlam
 
     }
     template<typename PointType,typename T>
-    PointType transformPoint(PointType point,const Eigen::Quaternion<T> &q,const Eigen::Matrix<T,3,1> &t){
+    static PointType transformPoint(PointType point,const Eigen::Quaternion<T> &q,const Eigen::Matrix<T,3,1> &t){
         Eigen::Matrix<T,3,1> ep = {point.x,point.y,point.z};
         ep = q*ep+t;
         point.x = ep.x();

@@ -4,7 +4,7 @@
  * @version: 
  * @Date: 2023-06-09 00:05:03
  * @LastEditors: Danny 986337252@qq.com
- * @LastEditTime: 2023-06-25 14:19:00
+ * @LastEditTime: 2023-07-02 15:03:12
  */
 #pragma once
 #include "ieskf_slam/modules/module_base.h"
@@ -15,7 +15,7 @@
 #include "ieskf_slam/modules/ieskf/ieskf.h"
 #include "ieskf_slam/modules/map/rect_map_manager.h"
 #include "ieskf_slam/modules/frontbackPropagate/frontback_propagate.h"
-#include "ieskf_slam/modules/frontend/lio_zh_model.hpp"
+#include "ieskf_slam/modules/frontend/lio_zh_model.h"
 namespace IESKFSlam
 {
     class FrontEnd: private ModuleBase

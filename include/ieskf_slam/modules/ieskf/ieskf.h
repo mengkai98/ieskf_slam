@@ -4,13 +4,13 @@
  * @version: 
  * @Date: 2023-06-13 13:00:25
  * @LastEditors: Danny 986337252@qq.com
- * @LastEditTime: 2023-06-25 14:48:29
+ * @LastEditTime: 2023-07-02 15:03:10
  */
 #pragma once 
 #include "ieskf_slam/modules/module_base.h"
 #include <Eigen/Dense>
 #include "ieskf_slam/type/imu.h"
-#include "ieskf_slam/math/SO3.hpp"
+#include "ieskf_slam/math/SO3.h"
 namespace IESKFSlam
 {
     class IESKF: private ModuleBase

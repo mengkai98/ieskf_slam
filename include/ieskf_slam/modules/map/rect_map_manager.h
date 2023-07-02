@@ -4,14 +4,14 @@
  * @version: 
  * @Date: 2023-06-13 17:28:53
  * @LastEditors: Danny 986337252@qq.com
- * @LastEditTime: 2023-06-25 14:48:39
+ * @LastEditTime: 2023-07-02 15:03:06
  */
 #pragma once 
 #include "ieskf_slam/modules/module_base.h"
 #include "ieskf_slam/type/pointcloud.h"
 #include "ieskf_slam/type/base_type.h"
 #include "pcl/common/transforms.h"
-#include "ieskf_slam/math/math.hpp"
+#include "ieskf_slam/math/math.h"
 namespace IESKFSlam
 {
     class RectMapManager :private ModuleBase
