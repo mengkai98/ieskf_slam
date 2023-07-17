@@ -29,6 +29,7 @@ namespace ROSNoetic
         ros::Subscriber imu_subscriber;
         ros::Publisher curr_cloud_pub;
         ros::Publisher path_pub;
+        ros::Publisher local_map_pub;
         std::shared_ptr<CommonLidarProcessInterface> lidar_process_ptr;
 
         // now status

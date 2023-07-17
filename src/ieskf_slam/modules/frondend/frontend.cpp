@@ -73,6 +73,9 @@ namespace IESKFSlam
     const PCLPointCloud& FrontEnd::readCurrentPointCloud(){
         return *filter_point_cloud_ptr;
     }
+    const PCLPointCloud &FrontEnd::readCurrentLocalMap(){
+        return *map_ptr->getLocalMap();
+    }
     bool FrontEnd::syncMeasureGroup(MeasureGroup&mg){
         mg.imus.clear();
         mg.cloud.cloud_ptr->clear();

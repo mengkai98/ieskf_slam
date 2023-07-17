@@ -32,7 +32,7 @@ namespace ROSNoetic
         }
         curr_cloud_pub = nh.advertise<sensor_msgs::PointCloud2>("curr_cloud",100);
         path_pub = nh.advertise<nav_msgs::Path>("path",100);
-
+        local_map_pub = nh.advertise<sensor_msgs::PointCloud2>("local_map",100);
         run();
     }
     
@@ -79,5 +79,11 @@ namespace ROSNoetic
         pcl::toROSMsg(cloud,msg);
         msg.header.frame_id = "map";
         curr_cloud_pub.publish(msg);
+
+        cloud = front_end_ptr->readCurrentLocalMap();
+        pcl::toROSMsg(cloud,msg);
+        msg.header.frame_id = "map";
+        local_map_pub.publish(msg);
+
     }
 } // namespace ROSNoetic

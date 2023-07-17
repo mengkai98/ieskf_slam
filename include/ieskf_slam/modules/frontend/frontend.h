@@ -46,6 +46,7 @@ namespace IESKFSlam
         bool track();
         // 点云读取
         const PCLPointCloud &readCurrentPointCloud();
+        const PCLPointCloud &readCurrentLocalMap();
         bool syncMeasureGroup(MeasureGroup&mg);
         void initState(MeasureGroup&mg);
         IESKF::State18 readState();
