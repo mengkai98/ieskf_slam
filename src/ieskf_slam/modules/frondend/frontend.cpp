@@ -148,12 +148,14 @@ namespace IESKFSlam
 
             x.bg /=double(imu_count);
             imu_scale  = GRAVITY/mean_acc.norm();
-            fbpropagate_ptr->imu_scale = imu_scale;
-            fbpropagate_ptr->last_imu = mg.imus.back();
+
             // 重力的符号为负 就和fastlio公式一致
             x.gravity = - mean_acc / mean_acc.norm() * GRAVITY;
             ieskf.setX(x);
             imu_inited = true;
+            fbpropagate_ptr -> imu_scale = imu_scale;
+            fbpropagate_ptr -> last_imu = mg.imus.back();
+            fbpropagate_ptr -> last_lidar_end_time_ = mg.lidar_end_time;
         }
         return ;
     }

@@ -22,6 +22,7 @@ namespace IESKFSlam
         float map_side_length_2; //正方体地图边长的一半
         float map_resolution;
     public:
+
         RectMapManager(const std::string &config_file_path,const std::string & prefix );
         ~RectMapManager();
         void reset();
