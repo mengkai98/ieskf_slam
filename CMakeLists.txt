@@ -36,6 +36,7 @@ catkin_package(
 )
 include_directories(
  include
+ lib
   ${catkin_INCLUDE_DIRS}
   ${PCL_INCLUDE_DIRS}
   ${YAML_CPP_INCLUDEDIR}

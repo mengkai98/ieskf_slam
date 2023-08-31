@@ -1,0 +1,18 @@
+wrapper:
+  config_file_name: velodyne.yaml
+  lidar_topic: /velodyne_points
+  imu_topic: /handsfree/imu
+  lidar_type: 1 # 0)avia 1) velodyne
+
+front_end:
+  extrin_r: [1,0,0,
+            0,1,0,
+            0,0,1]
+  extrin_t: [-0.27255, 0.00053,-0.17954]
+  enable_record: true
+  record_file_name: m2dgr_street05.txt
+ieskf:
+  cov_gyroscope: 0.1
+  cov_acceleration: 0.1
+  cov_bias_acceleration: 0.0001
+  cov_bias_gyroscope: 0.0001
