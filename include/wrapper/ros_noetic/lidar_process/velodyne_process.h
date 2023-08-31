@@ -33,10 +33,10 @@ namespace ROSNoetic
     {
     private:
     public:
-        bool process(const sensor_msgs::PointCloud2 &msg, IESKFSlam::PointCloud &cloud){
+        bool process(const sensor_msgs::PointCloud2 &msg, IESKFSlam::Frame &frame){
             pcl::PointCloud<velodyne_ros::Point> rs_cloud;
             pcl::fromROSMsg(msg,rs_cloud);
-            cloud.cloud_ptr->clear();
+            frame.cloud_ptr->clear();
             double end_time = msg.header.stamp.toSec();
             double start_time = end_time + rs_cloud[0].time;
             for (auto &&p : rs_cloud)
@@ -51,10 +51,10 @@ namespace ROSNoetic
                 
                 point.offset_time = (point_time - start_time)*1e9;
                 point.ring = p.ring;
-                cloud.cloud_ptr->push_back(point);
+                frame.cloud_ptr->push_back(point);
             
             }
-            cloud.time_stamp.fromSec(start_time);
+            frame.time_stamp.fromSec(start_time);
             return true;
         }
     };

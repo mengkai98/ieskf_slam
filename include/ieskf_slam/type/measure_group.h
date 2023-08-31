@@ -1,13 +1,13 @@
-#pragma once 
-#include "ieskf_slam/type/imu.h"
-#include "ieskf_slam/type/pointcloud.h"
+#pragma once
 #include <deque>
-namespace IESKFSlam
-{
-    struct MeasureGroup{
+
+#include "ieskf_slam/type/frame.h"
+#include "ieskf_slam/type/imu.h"
+namespace IESKFSlam {
+    struct MeasureGroup {
         double lidar_begin_time;
         std::deque<IMU> imus;
-        PointCloud cloud;
+        Frame frame;
         double lidar_end_time;
     };
-} // namespace IESKFSlam
+}  // namespace IESKFSlam

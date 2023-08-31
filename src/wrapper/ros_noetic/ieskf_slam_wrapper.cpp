@@ -6,20 +6,19 @@
  * @LastEditors: Danny 986337252@qq.com
  * @LastEditTime: 2023-07-02 15:25:59
  */
-#include "wrapper/ros_noetic/ieskf_frontend_noetic_wrapper.h"
+#include "wrapper/ros_noetic/ieskf_slam_wrapper.h"
 namespace ROSNoetic {
-    IESKFFrontEndWrapper::IESKFFrontEndWrapper(ros::NodeHandle &nh) {
+    IESKFSlamWrapper::IESKFSlamWrapper(ros::NodeHandle &nh) {
         std::string config_file_name, lidar_topic, imu_topic;
         nh.param<std::string>("wrapper/config_file_name", config_file_name, "");
         nh.param<std::string>("wrapper/lidar_topic", lidar_topic, "/lidar");
         nh.param<std::string>("wrapper/imu_topic", imu_topic, "/imu");
         front_end_ptr =
             std::make_shared<IESKFSlam::FrontEnd>(CONFIG_DIR + config_file_name, "front_end");
-
         // 发布者和订阅者
         cloud_subscriber =
-            nh.subscribe(lidar_topic, 100, &IESKFFrontEndWrapper::lidarCloudMsgCallBack, this);
-        imu_subscriber = nh.subscribe(imu_topic, 100, &IESKFFrontEndWrapper::imuMsgCallBack, this);
+            nh.subscribe(lidar_topic, 100, &IESKFSlamWrapper::lidarCloudMsgCallBack, this);
+        imu_subscriber = nh.subscribe(imu_topic, 100, &IESKFSlamWrapper::imuMsgCallBack, this);
         // 读取雷达类型
         int lidar_type = 0;
         nh.param<int>("wrapper/lidar_type", lidar_type, AVIA);
@@ -37,14 +36,14 @@ namespace ROSNoetic {
         run();
     }
 
-    IESKFFrontEndWrapper::~IESKFFrontEndWrapper() {}
-    void IESKFFrontEndWrapper::lidarCloudMsgCallBack(const sensor_msgs::PointCloud2Ptr &msg) {
-        IESKFSlam::PointCloud cloud;
-        lidar_process_ptr->process(*msg, cloud);
-        front_end_ptr->addPointCloud(cloud);
+    IESKFSlamWrapper::~IESKFSlamWrapper() {}
+    void IESKFSlamWrapper::lidarCloudMsgCallBack(const sensor_msgs::PointCloud2Ptr &msg) {
+        IESKFSlam::Frame frame;
+        lidar_process_ptr->process(*msg, frame);
+        front_end_ptr->addPointCloud(frame);
     }
 
-    void IESKFFrontEndWrapper::imuMsgCallBack(const sensor_msgs::ImuPtr &msg) {
+    void IESKFSlamWrapper::imuMsgCallBack(const sensor_msgs::ImuPtr &msg) {
         IESKFSlam::IMU imu;
         imu.time_stamp.fromNsec(msg->header.stamp.toNSec());
         imu.acceleration = {msg->linear_acceleration.x, msg->linear_acceleration.y,
@@ -52,7 +51,7 @@ namespace ROSNoetic {
         imu.gyroscope = {msg->angular_velocity.x, msg->angular_velocity.y, msg->angular_velocity.z};
         front_end_ptr->addImu(imu);
     }
-    void IESKFFrontEndWrapper::run() {
+    void IESKFSlamWrapper::run() {
         ros::Rate rate(500);
         while (ros::ok()) {
             rate.sleep();
@@ -62,7 +61,7 @@ namespace ROSNoetic {
             }
         }
     }
-    void IESKFFrontEndWrapper::publishMsg() {
+    void IESKFSlamWrapper::publishMsg() {
         static nav_msgs::Path path;
         auto X = front_end_ptr->readState();
         path.header.frame_id = "map";

@@ -1,7 +1,7 @@
 /*
- * @Descripttion: 
+ * @Descripttion:
  * @Author: MengKai
- * @version: 
+ * @version:
  * @Date: 2023-06-09 00:47:23
  * @LastEditors: MengKai
  * @LastEditTime: 2023-06-10 00:27:59
@@ -9,14 +9,14 @@
 #pragma once
 #include "common_lidar_process_interface.h"
 namespace avia_ros {
-  struct EIGEN_ALIGN16 Point {
-      PCL_ADD_POINT4D;
-      float intensity;
-      std::uint32_t offset_time;
-      std::uint8_t  line;
-      EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-  };
-}  // namespace ouster_ros
+    struct EIGEN_ALIGN16 Point {
+        PCL_ADD_POINT4D;
+        float intensity;
+        std::uint32_t offset_time;
+        std::uint8_t line;
+        EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+    };
+}  // namespace avia_ros
 
 // clang-format off
 POINT_CLOUD_REGISTER_POINT_STRUCT(avia_ros::Point,
@@ -36,10 +36,10 @@ namespace ROSNoetic
     public:
         AVIAProcess(/* args */){}
         ~AVIAProcess(){}
-        bool process(const sensor_msgs::PointCloud2 &msg,IESKFSlam::PointCloud&cloud){
+        bool process(const sensor_msgs::PointCloud2 &msg,IESKFSlam::Frame&f){
             pcl::PointCloud<avia_ros::Point> avia_cloud;
             pcl::fromROSMsg(msg,avia_cloud);
-            cloud.cloud_ptr->clear();
+            f.cloud_ptr->clear();
             for (auto &&point : avia_cloud)
             {
                 IESKFSlam::Point p;
@@ -49,9 +49,9 @@ namespace ROSNoetic
                 p.intensity = point.intensity;
                 p.ring = point.line;
                 p.offset_time = point.offset_time;
-                cloud.cloud_ptr->push_back(p);
+                f.cloud_ptr->push_back(p);
             }
-            cloud.time_stamp.fromNsec(msg.header.stamp.toNSec());
+            f.time_stamp.fromNsec(msg.header.stamp.toNSec());
             return true;
         }
     };

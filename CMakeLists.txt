@@ -48,7 +48,7 @@ SET(IESKF_SLAM_FILE
     src/ieskf_slam/modules/frontback_propagate/frontback_propagate.cpp
 )
 SET(NOETIC_FRONTEND_WRAPPER_FILE
-    src/wrapper/ros_noetic/ieskf_frontend_noetic_wrapper.cpp
+    src/wrapper/ros_noetic/ieskf_slam_wrapper.cpp
 )
 add_executable(ieskf_frontend_node src/app/ros_noetic/ieskf_noetic_running_node.cpp
 ${NOETIC_FRONTEND_WRAPPER_FILE}

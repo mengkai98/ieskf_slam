@@ -51,22 +51,23 @@ namespace IESKFSlam {
         print_table();
     }
     FrontEnd::~FrontEnd() { record_file.close(); }
+
     void FrontEnd::addImu(const IMU &imu) { imu_deque.push_back(imu); }
-    void FrontEnd::addPointCloud(const PointCloud &pointcloud) {
-        pointcloud_deque.push_back(pointcloud);
-    }
+
+    void FrontEnd::addPointCloud(const Frame &frame) { frame_deque.push_back(frame); }
+
     bool FrontEnd::track() {
         MeasureGroup mg;
         if (syncMeasureGroup(mg)) {
             if (!imu_inited) {
                 map_ptr->reset();
-                map_ptr->addScan(mg.cloud.cloud_ptr, Eigen::Quaterniond::Identity(),
+                map_ptr->addScan(mg.frame.cloud_ptr, Eigen::Quaterniond::Identity(),
                                  Eigen::Vector3d::Zero());
                 initState(mg);
                 return false;
             }
             fbpropagate_ptr->propagate(mg, ieskf_ptr);
-            voxel_filter.setInputCloud(mg.cloud.cloud_ptr);
+            voxel_filter.setInputCloud(mg.frame.cloud_ptr);
             voxel_filter.filter(*filter_point_cloud_ptr);
             ieskf_ptr->update();
             auto state = ieskf_ptr->getX();
@@ -86,27 +87,27 @@ namespace IESKFSlam {
     const PCLPointCloud &FrontEnd::readCurrentLocalMap() { return *map_ptr->getLocalMap(); }
     bool FrontEnd::syncMeasureGroup(MeasureGroup &mg) {
         mg.imus.clear();
-        mg.cloud.cloud_ptr->clear();
-        if (pointcloud_deque.empty() || imu_deque.empty()) {
+        mg.frame.cloud_ptr->clear();
+        if (frame_deque.empty() || imu_deque.empty()) {
             return false;
         }
         ///. wait for imu
         double imu_end_time = imu_deque.back().time_stamp.sec();
         double imu_start_time = imu_deque.front().time_stamp.sec();
-        double cloud_start_time = pointcloud_deque.front().time_stamp.sec();
+        double cloud_start_time = frame_deque.front().time_stamp.sec();
         double cloud_end_time =
-            pointcloud_deque.front().cloud_ptr->points.back().offset_time / 1e9 + cloud_start_time;
+            frame_deque.front().cloud_ptr->points.back().offset_time / 1e9 + cloud_start_time;
 
         if (imu_end_time < cloud_end_time) {
             return false;
         }
 
         if (cloud_end_time < imu_start_time) {
-            pointcloud_deque.pop_front();
+            frame_deque.pop_front();
             return false;
         }
-        mg.cloud = pointcloud_deque.front();
-        pointcloud_deque.pop_front();
+        mg.frame = frame_deque.front();
+        frame_deque.pop_front();
         mg.lidar_begin_time = cloud_start_time;
         mg.lidar_end_time = cloud_end_time;
         while (!imu_deque.empty()) {

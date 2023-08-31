@@ -26,7 +26,7 @@ namespace IESKFSlam {
 
        private:
         std::deque<IMU> imu_deque;
-        std::deque<PointCloud> pointcloud_deque;
+        std::deque<Frame> frame_deque;
         std::shared_ptr<IESKF> ieskf_ptr;
         std::shared_ptr<RectMapManager> map_ptr;
         std::shared_ptr<FrontbackPropagate> fbpropagate_ptr;
@@ -47,7 +47,7 @@ namespace IESKFSlam {
         ~FrontEnd();
         // 需要向前端传入imu和点云数据
         void addImu(const IMU &imu);
-        void addPointCloud(const PointCloud &pointcloud);
+        void addPointCloud(const Frame &f);
 
         // 跟踪
         bool track();

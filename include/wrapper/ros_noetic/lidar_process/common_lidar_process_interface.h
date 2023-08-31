@@ -15,6 +15,6 @@ namespace ROSNoetic {
     class CommonLidarProcessInterface {
        public:
         // 根据不同的lidar 转换成统一的cloud
-        virtual bool process(const sensor_msgs::PointCloud2 &msg, IESKFSlam::PointCloud &cloud) = 0;
+        virtual bool process(const sensor_msgs::PointCloud2 &msg, IESKFSlam::Frame &f) = 0;
     };
 }  // namespace ROSNoetic

@@ -6,11 +6,14 @@
  * @FilePath: /ieskf_slam/include/ieskf_slam/type/base_type.h
  */
 #pragma once
-#include "ieskf_slam/type/pointcloud.h"
+#ifndef PCL_NO_PRECOMPILE
+#define PCL_NO_PRECOMPILE
+#endif
 #include <pcl/filters/voxel_grid.h>
 #include <pcl/kdtree/kdtree_flann.h>
-namespace IESKFSlam
-{
+
+#include "ieskf_slam/type/frame.h"
+namespace IESKFSlam {
     // 体素滤波器
     using VoxelFilter = pcl::VoxelGrid<Point>;
     // KDTree
@@ -20,10 +23,10 @@ namespace IESKFSlam
 
     // 定义重力常量
     const double GRAVITY = 9.81;
-    template<typename _first, typename _second, typename _thrid>
-    struct triple{
+    template <typename _first, typename _second, typename _thrid>
+    struct triple {
         _first first;
         _second second;
         _thrid thrid;
     };
-} // namespace IESKFSlam
+}  // namespace IESKFSlam

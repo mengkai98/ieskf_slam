@@ -7,7 +7,7 @@ namespace IESKFSlam {
 
     FrontbackPropagate::~FrontbackPropagate() {}
     void FrontbackPropagate::propagate(MeasureGroup &mg, IESKF::Ptr ieskf_ptr) {
-        std::sort(mg.cloud.cloud_ptr->begin(), mg.cloud.cloud_ptr->end(),
+        std::sort(mg.frame.cloud_ptr->begin(), mg.frame.cloud_ptr->end(),
                   [](Point x, Point y) { return x.offset_time < y.offset_time; });
 
         std::vector<IMUPose6d> IMUpose;
@@ -17,7 +17,7 @@ namespace IESKFSlam {
         const double &imu_end_time = v_imu.back().time_stamp.sec();
         const double &pcl_beg_time = mg.lidar_begin_time;
         const double &pcl_end_time = mg.lidar_end_time;
-        auto &pcl_out = *mg.cloud.cloud_ptr;
+        auto &pcl_out = *mg.frame.cloud_ptr;
         auto imu_state = ieskf_ptr->getX();
         IMUpose.clear();
         IMUpose.emplace_back(0.0, acc_s_last, angvel_last, imu_state.velocity, imu_state.position,
