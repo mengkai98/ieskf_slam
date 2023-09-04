@@ -8,29 +8,31 @@
  */
 #include "ieskf_slam/modules/frontend/frontend.h"
 namespace IESKFSlam {
-    FrontEnd::FrontEnd(const std::string &config_file_path, const std::string &prefix)
-        : ModuleBase(config_file_path, prefix, "Front End Module") {
+    FrontEnd::FrontEnd(const std::string &config_file_path, const std::string &prefix,
+                       std::shared_ptr<std::deque<Frame>> iframe_buffer_ptr)
+        : ModuleBase(config_file_path, prefix, "Front End Module"),
+          frame_buffer_ptr(iframe_buffer_ptr) {
         float leaf_size;
         readParam("filter_leaf_size", leaf_size, 0.5f);
         voxel_filter.setLeafSize(leaf_size, leaf_size, leaf_size);
         std::vector<double> extrin_v;
         readParam("extrin_r", extrin_v, std::vector<double>());
-        extrin_r.setIdentity();
-        extrin_t.setZero();
+        Frame::Extrin.rotation.setIdentity();
+        Frame::Extrin.position.setZero();
         if (extrin_v.size() == 9) {
             Eigen::Matrix3d extrin_r33;
             extrin_r33 << extrin_v[0], extrin_v[1], extrin_v[2], extrin_v[3], extrin_v[4],
                 extrin_v[5], extrin_v[6], extrin_v[7], extrin_v[8];
-            extrin_r = extrin_r33;
+            Frame::Extrin.rotation = extrin_r33;
         } else if (extrin_v.size() == 3) {
-            extrin_r.x() = extrin_v[0];
-            extrin_r.y() = extrin_v[1];
-            extrin_r.z() = extrin_v[2];
-            extrin_r.w() = extrin_v[3];
+            Frame::Extrin.rotation.x() = extrin_v[0];
+            Frame::Extrin.rotation.y() = extrin_v[1];
+            Frame::Extrin.rotation.z() = extrin_v[2];
+            Frame::Extrin.rotation.w() = extrin_v[3];
         }
         readParam("extrin_t", extrin_v, std::vector<double>());
         if (extrin_v.size() == 3) {
-            extrin_t << extrin_v[0], extrin_v[1], extrin_v[2];
+            Frame::Extrin.position << extrin_v[0], extrin_v[1], extrin_v[2];
         }
         ieskf_ptr = std::make_shared<IESKF>(config_file_path, "ieskf");
         map_ptr = std::make_shared<RectMapManager>(config_file_path, "map");
@@ -54,10 +56,15 @@ namespace IESKFSlam {
 
     void FrontEnd::addImu(const IMU &imu) { imu_deque.push_back(imu); }
 
-    void FrontEnd::addPointCloud(const Frame &frame) { frame_deque.push_back(frame); }
+    void FrontEnd::addPointCloud(const Frame &frame) {
+        frame_deque.push_back(frame);
+        pcl::transformPointCloud(*frame_deque.back().cloud_ptr, *frame_deque.back().cloud_ptr,
+                                 Frame::Extrin.toTransformf());
+    }
 
     bool FrontEnd::track() {
         MeasureGroup mg;
+        static size_t cnt = 0;
         if (syncMeasureGroup(mg)) {
             if (!imu_inited) {
                 map_ptr->reset();
@@ -79,6 +86,14 @@ namespace IESKFSlam {
                             << state.rotation.w() << std::endl;
             }
             map_ptr->addScan(filter_point_cloud_ptr, state.rotation, state.position);
+            if (cnt % 10 == 0) {
+                Eigen::Matrix4f trans = Frame::Extrin.toTransformf().inverse();
+                pcl::transformPointCloud(*mg.frame.cloud_ptr, *mg.frame.cloud_ptr, trans);
+                mg.frame.pose.rotation = state.rotation;
+                mg.frame.pose.position = state.position;
+                frame_buffer_ptr->push_back(mg.frame);
+            }
+            cnt++;
             return true;
         }
         return false;

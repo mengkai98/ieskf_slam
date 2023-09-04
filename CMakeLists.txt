@@ -24,6 +24,8 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
 )
 find_package(PCL REQUIRED)
+find_package(Ceres REQUIRED)
+find_package(OpenCV REQUIRED)
 # YAML CPP
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(YAML_CPP REQUIRED yaml-cpp)
@@ -40,12 +42,17 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
   ${PCL_INCLUDE_DIRS}
   ${YAML_CPP_INCLUDEDIR}
+  ${OpenCV_CPP_INCLUDEDIR}
+  ${Ceres_INCLUDEDIR}
 )
 SET(IESKF_SLAM_FILE
     src/ieskf_slam/modules/frondend/frontend.cpp
+    src/ieskf_slam/modules/backend/backend.cpp
     src/ieskf_slam/modules/ieskf/ieskf.cpp
     src/ieskf_slam/modules/map/rect_map_manager.cpp
     src/ieskf_slam/modules/frontback_propagate/frontback_propagate.cpp
+    src/ieskf_slam/modules/scancontext/Scancontext.cpp
+    src/ieskf_slam/type/frame.cpp
 )
 SET(NOETIC_FRONTEND_WRAPPER_FILE
     src/wrapper/ros_noetic/ieskf_slam_wrapper.cpp
@@ -58,4 +65,6 @@ target_link_libraries(ieskf_frontend_node
   ${catkin_LIBRARIES}
   ${PCL_LIBRARIES}
 ${YAML_CPP_LIBRARIES}
+${OpenCV_LIBRARIES}
+Ceres::ceres
 )

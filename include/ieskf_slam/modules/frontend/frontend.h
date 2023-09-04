@@ -29,20 +29,21 @@ namespace IESKFSlam {
         std::shared_ptr<IESKF> ieskf_ptr;
         std::shared_ptr<RectMapManager> map_ptr;
         std::shared_ptr<FrontbackPropagate> fbpropagate_ptr;
+
+        std::shared_ptr<std::deque<Frame>> frame_buffer_ptr;
+
         VoxelFilter voxel_filter;
         LIOZHModel::Ptr lio_zh_model_ptr;
         PCLPointCloudPtr filter_point_cloud_ptr;
         bool imu_inited = false;
         double imu_scale = 1;
-        Eigen::Quaterniond extrin_r;
-        Eigen::Vector3d extrin_t;
-
         bool enable_record = false;
         std::string record_file_name;
         std::fstream record_file;
 
        public:
-        FrontEnd(const std::string &config_file_path, const std::string &prefix);
+        FrontEnd(const std::string &config_file_path, const std::string &prefix,
+                 std::shared_ptr<std::deque<Frame>> iframe_buffer_ptr);
         ~FrontEnd();
         // 需要向前端传入imu和点云数据
         void addImu(const IMU &imu);
