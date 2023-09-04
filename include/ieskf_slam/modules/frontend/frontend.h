@@ -18,6 +18,7 @@
 #include "ieskf_slam/type/base_type.h"
 #include "ieskf_slam/type/imu.h"
 #include "ieskf_slam/type/measure_group.h"
+
 namespace IESKFSlam {
     class FrontEnd : private ModuleBase {
        public:
