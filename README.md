@@ -17,6 +17,22 @@ void FrontEnd::addPointCloud(const Frame &frame) {
 
 ```
 
+在v4-v7的版本里要做如下修改：
+
+```c++
+//头文件包含
+#include <pcl/common/transforms.h>
+...
+...
+void FrontEnd::addPointCloud(const Frame &frame) {
+    frame_deque.push_back(frame);
+    // 将点云变换到IMU系下：
+    pcl::transformPointCloud(*pointcloud_deque.back().cloud_ptr,
+                                 *pointcloud_deque.back().cloud_ptr,
+                                 compositeTransform(extrin_r, extrin_t).cast<float>());
+}
+```
+
    
 
 ## 二、前端的部分已经更新完毕：
