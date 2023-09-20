@@ -1,0 +1,5 @@
+<launch>
+    <rosparam command="load" file="$(find ieskf_slam)/config/avia.yaml" />
+    <node pkg="ieskf_slam" type="ieskf_frontend_node" name="ieskf_frontend_node" output="screen" /> 
+	<node  pkg="rviz" type="rviz" name="rviz" args="-d $(find ieskf_slam)/rviz/show.rviz" /> 
+</launch>
