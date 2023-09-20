@@ -1,0 +1,16 @@
+wrapper:
+  config_file_name: avia.yaml
+  lidar_topic: /livox/pointcloud
+  imu_topic: /livox/imu
+  lidar_type: 0 # 0)avia
+
+front_end:
+  extrin_r: [1,0,0,
+            0,1,0,
+            0,0,1]
+  extrin_t: [0.4165,0.2326,-0.2840]
+ieskf:
+  cov_gyroscope: 0.1
+  cov_acceleration: 0.1
+  cov_bias_acceleration: 0.0001
+  cov_bias_gyroscope: 0.0001
