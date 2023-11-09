@@ -1,6 +1,10 @@
 #pragma once
 #include <fstream>
 #include "types.h"
+#ifndef PROJ_DIR
+#define PROJ_DIR " "
+#endif
+const std::string WORK_SPACE_DIR = PROJ_DIR;
 // VERTEX_SE3:QUAT ID x y z q_x q_y q_z q_w
 // EDGE_SE3:QUAT ID_a ID_b x_ab y_ab z_ab q_x_ab q_y_ab q_z_ab q_w_ab I_11 I_12 I_13 ... I_16 I_22 I_23 ... I_26 ... I_66 // NOLINT
 

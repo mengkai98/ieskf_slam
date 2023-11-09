@@ -16,6 +16,7 @@ void outputPose(const std::string& path){
 }
 int main(int argc, char const *argv[])
 {
+    std::cout<<WORK_SPACE_DIR<<std::endl;
     if(readG2O("/home/danny/code/pose_graph/sphere_data.g2o.txt",vertexs,binary_edges)){
         std::cout<<"READ G2O FILE COMPLETED!!"<<std::endl;
         std::cout<<"Vertexs Size: "<<vertexs.size()<<std::endl;
