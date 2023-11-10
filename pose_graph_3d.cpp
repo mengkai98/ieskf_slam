@@ -21,6 +21,7 @@ int main(int argc, char const *argv[])
         std::cout<<"READ G2O FILE COMPLETED!!"<<std::endl;
         std::cout<<"Vertexs Size: "<<vertexs.size()<<std::endl;
         std::cout<<"Constraints Size: "<<binary_edges.size()<<std::endl;
+        std::cout<< "WORK DIR: "<<WORK_SPACE_DIR<<std::endl;
     }
     outputPose(WORK_SPACE_DIR+"init_pose.txt");
     //*  构建Problem
