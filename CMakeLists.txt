@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.0)
 project(pose_graph_3d)
 SET( CMAKE_CXX_FLAGS "-O3" )
-add_definitions(-DPROJ_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
+add_definitions(-DPROJ_DIR="${CMAKE_CURRENT_SOURCE_DIR}/")
 find_package(Ceres REQUIRED)
 add_executable(pose_graph_3d pose_graph_3d.cpp)
 target_link_libraries(pose_graph_3d Ceres::ceres)
