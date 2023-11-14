@@ -38,8 +38,8 @@ namespace IESKFSlam {
             int left = 0, right = local_map_ptr->size() - 1;
             while (left < right) {
                 while (left < right &&
-                       abs(local_map_ptr->points[right].x - pos_t.x()) > map_side_length_2 &&
-                       abs(local_map_ptr->points[right].y - pos_t.y()) > map_side_length_2 &&
+                       abs(local_map_ptr->points[right].x - pos_t.x()) > map_side_length_2 ||
+                       abs(local_map_ptr->points[right].y - pos_t.y()) > map_side_length_2 ||
                        abs(local_map_ptr->points[right].z - pos_t.z()) > map_side_length_2)
                     right--;
                 while (left < right &&
