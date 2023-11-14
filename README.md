@@ -40,7 +40,7 @@ https://zhuanlan.zhihu.com/p/635702243
 
 ### 2.1 IESKF 状态收敛判断：
 
-[issue 2]: https://github.com/mengkai98/ieskf_slam/issues/2
+https://github.com/mengkai98/ieskf_slam/issues/2
 
 这里在`update_x`的判断里，误把索引`idx`写成了`i`
 
@@ -61,7 +61,7 @@ https://zhuanlan.zhihu.com/p/635702243
 
 ### 2.2 地图模块中，删除掉地图范围外点的判断：
 
-[issue 3]: https://github.com/mengkai98/ieskf_slam/issues/3
+https://github.com/mengkai98/ieskf_slam/issues/3
 
 在地图管理的这部分，我们应该采用或逻辑来判断点是否是在地图的外面，而不是与逻辑
 
