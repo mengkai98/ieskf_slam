@@ -48,7 +48,7 @@ bool BackEnd::addFrame(PCLPointCloud &opt_map, PCLPointCloud &cloud, Pose &pose)
         {
             // 进行匹配
             Eigen::Matrix4f trans_icp;
-            Eigen::Matrix4d T_L_I, T_I_L, T_r;
+            Eigen::Matrix4d T_L_I, T_I_L, T_c;
             if (scanRegister(trans_icp, clouds.size() - 1, res.first, res.second))
             {
                 // 匹配成功，计算约束
@@ -58,11 +58,13 @@ bool BackEnd::addFrame(PCLPointCloud &opt_map, PCLPointCloud &cloud, Pose &pose)
                 T_L_I.setIdentity();
                 T_L_I.block<3, 3>(0, 0) = extrin_r.toRotationMatrix();
                 T_L_I.block<3, 1>(0, 3) = extrin_t;
+                // 使用性质进行取逆
                 T_I_L.block<3, 3>(0, 0) = extrin_r.conjugate().toRotationMatrix();
                 T_I_L.block<3, 1>(0, 3) = extrin_r.conjugate() * extrin_t * (-1.0);
-                T_r = T_L_I * trans_icp.cast<double>() * T_I_L;
-                be.constraint.rotation = T_r.block<3, 3>(0, 0);
-                be.constraint.position = T_r.block<3, 1>(0, 3);
+                // 计算T_c
+                T_c = T_L_I * trans_icp.cast<double>() * T_I_L;
+                be.constraint.rotation = T_c.block<3, 3>(0, 0);
+                be.constraint.position = T_c.block<3, 1>(0, 3);
                 binary_edges.push_back(be);
                 // copy 所有的位姿
                 std::vector<Pose> copy_poses = poses;
@@ -92,6 +94,10 @@ bool BackEnd::addFrame(PCLPointCloud &opt_map, PCLPointCloud &cloud, Pose &pose)
 
                     return true;
                 }
+                else
+                {
+                    binary_edges.pop_back();
+                }
             }
         }
     }
@@ -101,19 +107,23 @@ bool BackEnd::addFrame(PCLPointCloud &opt_map, PCLPointCloud &cloud, Pose &pose)
 }
 bool BackEnd::scanRegister(Eigen::Matrix4f &match_result, int from_id, int to_id, float angle)
 {
-    // 1 . 计算初始位姿：
+    // 1 . 计算初始位姿：根据ScanContext的定义：
     Eigen::AngleAxisf init_rotation(-1 * angle, Eigen::Vector3f::UnitZ());
     Eigen::Matrix4f initial_transform = Eigen::Matrix4f::Identity();
+    // 角轴变换为旋转矩阵赋值为变换矩阵。
     initial_transform.block<3, 3>(0, 0) = init_rotation.toRotationMatrix();
-    // // ICP 配准
+    // 2. ICP 配准
     pcl::IterativeClosestPoint<Point, Point> icp;
     icp.setInputSource(clouds[from_id].makeShared());
     icp.setInputTarget(clouds[to_id].makeShared());
+    // 迭代次数
     icp.setMaximumIterations(20);
     PCLPointCloud result;
     icp.align(result, initial_transform);
+    // 3.  获取配准结果
     match_result = icp.getFinalTransformation();
     std::cout << "icp score: " << icp.getFitnessScore() << std::endl;
+    // 4. 得分小于多少，认为配准成功
     return icp.getFitnessScore() < 3.0;
 }
 } // namespace IESKFSlam

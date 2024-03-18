@@ -6,12 +6,9 @@ namespace ROSNoetic
 IESKFBackEndWrapper::IESKFBackEndWrapper(ros::NodeHandle &nh)
 {
     cloud_with_pose_sub = nh.subscribe("/cloud_with_pose", 100, &IESKFBackEndWrapper::cloudWithPoseMsgCallBack, this);
-    // imu_subscriber = nh.subscribe(imu_topic, 100, &IESKFFrontEndWrapper::imuMsgCallBack, this);
     global_opt_map_pub = nh.advertise<sensor_msgs::PointCloud2>("global_opt_map", 100);
-
     std::string config_file_name;
     nh.param<std::string>("wrapper/config_file_name", config_file_name, "");
-
     backend_ptr = std::make_shared<IESKFSlam::BackEnd>(CONFIG_DIR + config_file_name, "back_end");
     ros::spin();
 }

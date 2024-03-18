@@ -65,7 +65,7 @@ bool PoseGraphOpt::slove(std::vector<Pose> &poses, std::vector<BinaryEdge> &bes)
     // 求解
     ceres::Solve(options, problem, &summary);
     // 输出求解结果
-    std::cout << summary.FullReport() << std::endl;
+    std::cout << summary.BriefReport() << std::endl;
     return summary.termination_type == ceres::CONVERGENCE;
 }
 } // namespace IESKFSlam
