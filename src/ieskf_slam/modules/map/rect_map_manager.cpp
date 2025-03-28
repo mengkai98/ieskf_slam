@@ -39,12 +39,12 @@ namespace IESKFSlam
             // . 把地图中超过 地图范围的挪到后面，用resize删除
             int left = 0,right = local_map_ptr->size()-1;
             while(left<right){
-                while(left<right&&abs(local_map_ptr->points[right].x-pos_t.x())>map_side_length_2
-                                &&abs(local_map_ptr->points[right].y-pos_t.y())>map_side_length_2
-                                &&abs(local_map_ptr->points[right].z-pos_t.z())>map_side_length_2)right--;
-                while(left<right&&abs(local_map_ptr->points[left].x-pos_t.x())<map_side_length_2
-                                &&abs(local_map_ptr->points[left].y-pos_t.y())<map_side_length_2
-                                &&abs(local_map_ptr->points[left].z-pos_t.z())<map_side_length_2)left++;
+                while(left<right&&(abs(local_map_ptr->points[right].x-pos_t.x())>map_side_length_2
+                                ||abs(local_map_ptr->points[right].y-pos_t.y())>map_side_length_2
+                                ||abs(local_map_ptr->points[right].z-pos_t.z())>map_side_length_2))right--;
+                while(left<right&&(abs(local_map_ptr->points[left].x-pos_t.x())<map_side_length_2
+                                ||abs(local_map_ptr->points[left].y-pos_t.y())<map_side_length_2
+                                ||abs(local_map_ptr->points[left].z-pos_t.z())<map_side_length_2))left++;
                 std::swap(local_map_ptr->points[left],local_map_ptr->points[right]);
             }
             local_map_ptr->resize(right+1);

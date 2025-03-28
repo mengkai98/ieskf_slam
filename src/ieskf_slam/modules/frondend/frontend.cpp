@@ -49,6 +49,9 @@ namespace IESKFSlam
     }
     void FrontEnd::addPointCloud(const PointCloud&pointcloud){
         pointcloud_deque.push_back(pointcloud);
+        pcl::transformPointCloud(*pointcloud_deque.back().cloud_ptr,
+                                 *pointcloud_deque.back().cloud_ptr,
+                                 compositeTransform(extrin_r, extrin_t).cast<float>());
     }
     bool FrontEnd::track(){
         MeasureGroup mg;
@@ -72,9 +75,6 @@ namespace IESKFSlam
     }
     const PCLPointCloud& FrontEnd::readCurrentPointCloud(){
         return *filter_point_cloud_ptr;
-    }
-    const PCLPointCloud &FrontEnd::readCurrentLocalMap(){
-        return *map_ptr->getLocalMap();
     }
     bool FrontEnd::syncMeasureGroup(MeasureGroup&mg){
         mg.imus.clear();
@@ -148,14 +148,12 @@ namespace IESKFSlam
 
             x.bg /=double(imu_count);
             imu_scale  = GRAVITY/mean_acc.norm();
-
+            fbpropagate_ptr->imu_scale = imu_scale;
+            fbpropagate_ptr->last_imu = mg.imus.back();
             // 重力的符号为负 就和fastlio公式一致
             x.gravity = - mean_acc / mean_acc.norm() * GRAVITY;
             ieskf.setX(x);
             imu_inited = true;
-            fbpropagate_ptr -> imu_scale = imu_scale;
-            fbpropagate_ptr -> last_imu = mg.imus.back();
-            fbpropagate_ptr -> last_lidar_end_time_ = mg.lidar_end_time;
         }
         return ;
     }
