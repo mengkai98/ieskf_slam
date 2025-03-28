@@ -12,22 +12,22 @@ https://zhuanlan.zhihu.com/p/635702243
 **v1**:https://zhuanlan.zhihu.com/p/636020378 工程框架建立
 [v1]: https://github.com/mengkai98/ieskf_slam/tree/v1
 
-**v2**:https://zhuanlan.zhihu.com/p/636020378 初始化部分
+**v2**:https://zhuanlan.zhihu.com/p/636726529 初始化部分
 [v2]: https://github.com/mengkai98/ieskf_slam/tree/v2
 
-**v3**:https://zhuanlan.zhihu.com/p/636020378 前向传播
+**v3**:https://zhuanlan.zhihu.com/p/637993519 前向传播
 [v3]: https://github.com/mengkai98/ieskf_slam/tree/v3
 
-**v4**:https://zhuanlan.zhihu.com/p/636020378 ieskf更新
+**v4**:https://zhuanlan.zhihu.com/p/639021940 ieskf更新
 [v4]: https://github.com/mengkai98/ieskf_slam/tree/v4
 
-**v5**:https://zhuanlan.zhihu.com/p/636020378 地图更新
+**v5**:https://zhuanlan.zhihu.com/p/644158391 地图更新
 [v5]: https://github.com/mengkai98/ieskf_slam/tree/v5
 
-**v6**:https://zhuanlan.zhihu.com/p/636020378 后向传播
+**v6**:https://zhuanlan.zhihu.com/p/647294157 后向传播
 [v6]: https://github.com/mengkai98/ieskf_slam/tree/v6
 
-**v7**:https://zhuanlan.zhihu.com/p/636020378 M2DGR适配以及轨迹评估
+**v7**:https://zhuanlan.zhihu.com/p/653561370 M2DGR适配以及轨迹评估
 [v7]: https://github.com/mengkai98/ieskf_slam/tree/v7
 
 ### 1.2 后端部分：
