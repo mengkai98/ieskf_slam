@@ -9,32 +9,26 @@ https://zhuanlan.zhihu.com/p/635702243
 
 ### 1.1 前端部分：
 
-**v1**:https://zhuanlan.zhihu.com/p/636020378 工程框架建立
-[v1]: https://github.com/mengkai98/ieskf_slam/tree/v1
 
-**v2**:https://zhuanlan.zhihu.com/p/636726529 初始化部分
-[v2]: https://github.com/mengkai98/ieskf_slam/tree/v2
+**v1 工程框架建立**&nbsp;&nbsp;&nbsp; [![zhihu](https://static.zhihu.com/heifetz/favicon.ico)](https://zhuanlan.zhihu.com/p/636020378)&nbsp;&nbsp;&nbsp;&nbsp; [![github](https://github.com/favicon.ico)]( https://github.com/mengkai98/ieskf_slam/tree/v1)
 
-**v3**:https://zhuanlan.zhihu.com/p/637993519 前向传播
-[v3]: https://github.com/mengkai98/ieskf_slam/tree/v3
+**v2 初始化部分** &nbsp;&nbsp;&nbsp; [![zhihu](https://static.zhihu.com/heifetz/favicon.ico)](https://zhuanlan.zhihu.com/p/636726529)&nbsp;&nbsp;&nbsp;&nbsp; [![github](https://github.com/favicon.ico)]( https://github.com/mengkai98/ieskf_slam/tree/v2)
 
-**v4**:https://zhuanlan.zhihu.com/p/639021940 ieskf更新
-[v4]: https://github.com/mengkai98/ieskf_slam/tree/v4
+**v3 前向传播** &nbsp;&nbsp;&nbsp; [![zhihu](https://static.zhihu.com/heifetz/favicon.ico)](https://zhuanlan.zhihu.com/p/637993519)&nbsp;&nbsp;&nbsp;&nbsp; [![github](https://github.com/favicon.ico)]( https://github.com/mengkai98/ieskf_slam/tree/v3)
 
-**v5**:https://zhuanlan.zhihu.com/p/644158391 地图更新
-[v5]: https://github.com/mengkai98/ieskf_slam/tree/v5
+**v4 ieskf更新** &nbsp;&nbsp;&nbsp; [![zhihu](https://static.zhihu.com/heifetz/favicon.ico)](https://zhuanlan.zhihu.com/p/639021940)&nbsp;&nbsp;&nbsp;&nbsp; [![github](https://github.com/favicon.ico)]( https://github.com/mengkai98/ieskf_slam/tree/v4)
 
-**v6**:https://zhuanlan.zhihu.com/p/647294157 后向传播
-[v6]: https://github.com/mengkai98/ieskf_slam/tree/v6
+**v5 地图更新** &nbsp;&nbsp;&nbsp; [![zhihu](https://static.zhihu.com/heifetz/favicon.ico)](https://zhuanlan.zhihu.com/p/644158391)&nbsp;&nbsp;&nbsp;&nbsp; [![github](https://github.com/favicon.ico)]( https://github.com/mengkai98/ieskf_slam/tree/v5)
 
-**v7**:https://zhuanlan.zhihu.com/p/653561370 M2DGR适配以及轨迹评估
-[v7]: https://github.com/mengkai98/ieskf_slam/tree/v7
+**v6 后向传播** &nbsp;&nbsp;&nbsp; [![zhihu](https://static.zhihu.com/heifetz/favicon.ico)](https://zhuanlan.zhihu.com/p/647294157)&nbsp;&nbsp;&nbsp;&nbsp; [![github](https://github.com/favicon.ico)]( https://github.com/mengkai98/ieskf_slam/tree/v6)
+
+**v7 M2DGR适配以及轨迹评估** &nbsp;&nbsp;&nbsp; [![zhihu](https://static.zhihu.com/heifetz/favicon.ico)](https://zhuanlan.zhihu.com/p/653561370)&nbsp;&nbsp;&nbsp;&nbsp; [![github](https://github.com/favicon.ico)]( https://github.com/mengkai98/ieskf_slam/tree/v7)
 
 ### 1.2 后端部分：
 
-**pose_graph**: https://zhuanlan.zhihu.com/p/666030162 动手写Ceres回环优化
-[pose_graph]: https://github.com/mengkai98/ieskf_slam/tree/pose_graph
+**pose_graph 动手写Ceres回环优化** &nbsp;&nbsp;&nbsp;[![zhihu](https://static.zhihu.com/heifetz/favicon.ico)](https://zhuanlan.zhihu.com/p/666030162)&nbsp;&nbsp;&nbsp;&nbsp; [![github](https://github.com/favicon.ico)](https://github.com/mengkai98/ieskf_slam/tree/pose_graph)
 
+**backend 完成后端** &nbsp;&nbsp;&nbsp;[![zhihu](https://static.zhihu.com/heifetz/favicon.ico)](https://zhuanlan.zhihu.com/p/687676064)&nbsp;&nbsp;&nbsp;&nbsp; [![github](https://github.com/favicon.ico)](https://github.com/mengkai98/ieskf_slam/tree/backend) 
 
 ## 2  BUG修正：
 
