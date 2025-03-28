@@ -49,6 +49,9 @@ namespace IESKFSlam
     }
     void FrontEnd::addPointCloud(const PointCloud&pointcloud){
         pointcloud_deque.push_back(pointcloud);
+        pcl::transformPointCloud(*pointcloud_deque.back().cloud_ptr,
+                                 *pointcloud_deque.back().cloud_ptr,
+                                 compositeTransform(extrin_r, extrin_t).cast<float>());
     }
     bool FrontEnd::track(){
         MeasureGroup mg;
@@ -72,9 +75,6 @@ namespace IESKFSlam
     }
     const PCLPointCloud& FrontEnd::readCurrentPointCloud(){
         return *filter_point_cloud_ptr;
-    }
-    const PCLPointCloud &FrontEnd::readCurrentLocalMap(){
-        return *map_ptr->getLocalMap();
     }
     bool FrontEnd::syncMeasureGroup(MeasureGroup&mg){
         mg.imus.clear();
